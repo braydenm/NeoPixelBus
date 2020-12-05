@@ -368,7 +368,7 @@ public:
 };
 
 /* RGB Feature -- Some APA102s ship in RGB order */
-class DotStarRgbFeature : public DotStar3ElementsNoSettings
+class DotStarRgbFeature : public DotStar3ElementsNoSettings //TODO modify for HD108
 {
 public:
     static void applyPixelColor(uint8_t* pPixels, uint16_t indexPixel, ColorObject color)
