@@ -32,8 +32,8 @@ template<typename T_TWOWIRE> class HD108MethodBase
 {
 public:
     HD108MethodBase(uint8_t pinClock, uint8_t pinData, uint16_t pixelCount, size_t elementSize, size_t settingsSize) :
-        _sizeData(pixelCount * elementSize + settingsSize),
-        _sizeEndFrame((pixelCount + 15) / 16), // 16 = div 2 (bit for every two pixels) div 8 (bits to bytes)
+        _sizeData(2 * pixelCount * elementSize + settingsSize),
+        _sizeEndFrame((pixelCount + 15) / 8), // 16 = div 2 (bit for every two pixels) div 8 (bits to bytes)
         _wire(pinClock, pinData)
     {
         _data = static_cast<uint8_t*>(malloc(_sizeData));
@@ -71,25 +71,24 @@ public:
 
     void Update(bool)
     {
-        const uint8_t startFrame[4] = { 0x00 };
-        const uint8_t resetFrame[4] = { 0x00 };
+        // Serial.println("Updating Strip - Begin Transaction");
+        const uint8_t startFrame[16] = { 0x00 }; //Send 128 0 bits. (Sixteen null bytes)
         
         _wire.beginTransaction();
-
         // start frame
         _wire.transmitBytes(startFrame, sizeof(startFrame));
-        
+
+        // Serial.println("Updating Strip - Write Data");
         // data
+        // Serial.println(*_data, HEX);
         _wire.transmitBytes(_data, _sizeData);
 
-       // reset frame
-        _wire.transmitBytes(resetFrame, sizeof(resetFrame));
-        
-        // end frame 
-        
-        // one bit for every two pixels with no less than 1 byte
+        // Serial.println("Updating Strip - End Transaction");
+        // end frame      
+        // one 1 bit for every pixel (Eight 1s for every 8 pixels)
         for (size_t endFrameByte = 0; endFrameByte < _sizeEndFrame; endFrameByte++)
         {
+            // Serial.println(0xFF, HEX);
             _wire.transmitByte(0x00);
         }
         
@@ -124,6 +123,3 @@ typedef HD108MethodBase<TwoWireSpiImple<SpiSpeed10Mhz>> HD108Spi10MhzMethod;
 typedef HD108MethodBase<TwoWireSpiImple<SpiSpeed2Mhz>> HD108Spi2MhzMethod;
 typedef HD108Spi10MhzMethod HD108SpiMethod;
 #endif
-
-
-

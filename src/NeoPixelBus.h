@@ -62,6 +62,7 @@ License along with NeoPixel.  If not, see
 #include "internal/DotStarColorFeatures.h"
 #include "internal/Lpd8806ColorFeatures.h"
 #include "internal/P9813ColorFeatures.h"
+#include "internal/HD108ColorFeatures.h"
 #include "internal/NeoSegmentFeatures.h"
 
 #include "internal/Layouts.h"
@@ -84,6 +85,7 @@ License along with NeoPixel.  If not, see
 #include "internal/Lpd8806GenericMethod.h"
 #include "internal/Ws2801GenericMethod.h"
 #include "internal/P9813GenericMethod.h"
+#include "internal/HD108GenericMethod.h"
 
 #if defined(ARDUINO_ARCH_ESP8266)
 
